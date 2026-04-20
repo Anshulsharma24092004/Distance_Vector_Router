@@ -1,0 +1,45 @@
+version: "3.8"
+
+networks:
+  net_lab:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+services:
+  router_a:
+    build: .
+    container_name: router_a
+    privileged: true
+    networks:
+      net_lab:
+        ipv4_address: 172.20.0.10
+    environment:
+      - MY_IP=172.20.0.10
+      - NEIGHBORS=172.20.0.20,172.20.0.30
+      - SUBNETS=10.0.1.0/24:10.0.1.10,10.0.3.0/24:10.0.3.10
+
+  router_b:
+    build: .
+    container_name: router_b
+    privileged: true
+    networks:
+      net_lab:
+        ipv4_address: 172.20.0.20
+    environment:
+      - MY_IP=172.20.0.20
+      - NEIGHBORS=172.20.0.10,172.20.0.30
+      - SUBNETS=10.0.1.0/24:10.0.1.20,10.0.2.0/24:10.0.2.10
+
+  router_c:
+    build: .
+    container_name: router_c
+    privileged: true
+    networks:
+      net_lab:
+        ipv4_address: 172.20.0.30
+    environment:
+      - MY_IP=172.20.0.30
+      - NEIGHBORS=172.20.0.10,172.20.0.20
+      - SUBNETS=10.0.2.0/24:10.0.2.20,10.0.3.0/24:10.0.3.30
